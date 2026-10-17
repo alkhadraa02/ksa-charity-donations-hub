@@ -1,0 +1,119 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  name         String
+  passwordHash String
+  role         String    @default("ADMIN")
+  createdAt    DateTime  @default(now())
+  sessions     Session[]
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  tokenHash String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}
+
+model Campaign {
+  id         String           @id @default(cuid())
+  slug       String           @unique
+  title      String
+  summary    String
+  story      String
+  category   String
+  goalAmount Int
+  status     String           @default("ACTIVE")
+  tone       String           @default("teal")
+  endsAt     DateTime?
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @updatedAt
+  updates    CampaignUpdate[]
+  donations  Donation[]
+
+  @@index([status])
+}
+
+model CampaignUpdate {
+  id         String   @id @default(cuid())
+  campaignId String
+  campaign   Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  title      String
+  body       String
+  createdAt  DateTime @default(now())
+
+  @@index([campaignId])
+}
+
+model Donor {
+  id        String     @id @default(cuid())
+  name      String
+  email     String     @unique
+  phone     String?
+  city      String?
+  createdAt DateTime   @default(now())
+  donations Donation[]
+}
+
+model Donation {
+  id          String   @id @default(cuid())
+  receiptNo   String   @unique
+  campaignId  String
+  campaign    Campaign @relation(fields: [campaignId], references: [id])
+  donorId     String?
+  donor       Donor?   @relation(fields: [donorId], references: [id])
+  donorName   String?
+  anonymous   Boolean  @default(false)
+  amount      Int
+  recurring   Boolean  @default(false)
+  status      String   @default("PAID")
+  provider    String
+  providerRef String?
+  createdAt   DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([campaignId])
+  @@index([status])
+  @@index([donorId])
+}
+
+model Volunteer {
+  id           String   @id @default(cuid())
+  name         String
+  phone        String
+  email        String
+  city         String
+  interests    String
+  availability String
+  message      String?
+  status       String   @default("NEW")
+  createdAt    DateTime @default(now())
+
+  @@index([status])
+}
+
+model TransparencyReport {
+  id               String   @id @default(cuid())
+  title            String
+  period           String
+  year             Int
+  summary          String
+  totalIncome      Int
+  programSpend     Int
+  adminSpend       Int
+  fundraisingSpend Int
+  createdAt        DateTime @default(now())
+}
