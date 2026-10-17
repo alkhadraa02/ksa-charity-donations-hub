@@ -24,11 +24,9 @@ A complete charity platform: campaigns with goal/raised progress, a donate flow 
 
 ## لقطات الشاشة · Screenshots
 
-أضف لقطاتك هنا بعد تشغيل المشروع محلياً · Add your screenshots here after running locally.
-
-| الصفحة الرئيسية | لوحة الإدارة |
+| الصفحة الرئيسية · Home | لوحة الإدارة · Admin dashboard |
 | --- | --- |
-| `docs/home.png` | `docs/admin.png` |
+| ![الصفحة الرئيسية](docs/home.png) | ![لوحة الإدارة](docs/admin.png) |
 
 ## التقنيات · Stack
 
